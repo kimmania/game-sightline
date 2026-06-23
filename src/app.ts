@@ -108,7 +108,7 @@ class SightlineApp {
     this.stashUndo();
     const current = this.state.grid[row][col];
     const next: CellState =
-      current === 'unknown' ? 'white' : current === 'white' ? 'black' : 'unknown';
+      current === 'unknown' ? 'black' : current === 'black' ? 'white' : 'unknown';
     this.state.grid[row][col] = next;
     this.refresh();
   }

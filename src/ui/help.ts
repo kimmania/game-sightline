@@ -146,7 +146,7 @@ export function openHelp(): void {
     </ul>
     <p><strong>Controls:</strong></p>
     <ul style="padding-left:18px;margin:8px 0;">
-      <li>Tap a cell to cycle: unknown → white → black → unknown.</li>
+      <li>Tap a cell to cycle: unknown → black → white → unknown.</li>
       <li>Numbered cells are always white and cannot be changed.</li>
       <li>Long-press a numbered cell to highlight its four sightlines.</li>
       <li>Tap <em>Sightlines</em> to show current count vs target on every number.</li>
