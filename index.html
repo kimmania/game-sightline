@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Sightline" />
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta
+      name="description"
+      content="A Kurodoko shading puzzle. Shade cells so every number sees the right count."
+    />
+    <link rel="apple-touch-icon" href="/game-sightline/icons/apple-touch-icon.png" />
+    <title>Sightline</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <h1 class="title">Sightline</h1>
+        <div class="status-bar">
+          <span id="difficulty-label" class="difficulty-label">Easy</span>
+          <span id="mistakes" class="mistakes">Mistakes: 0</span>
+        </div>
+      </header>
+
+      <section class="controls">
+        <label class="difficulty-label">
+          <span class="sr-only">Difficulty</span>
+          <select id="difficulty" class="difficulty-select">
+            <option value="easy">Easy (8×8)</option>
+            <option value="medium">Medium (10×10)</option>
+            <option value="hard">Hard (12×12)</option>
+            <option value="expert">Expert (14×14)</option>
+          </select>
+        </label>
+        <button type="button" id="new-game" class="btn btn-primary">New Game</button>
+        <button type="button" id="undo" class="btn" disabled>Undo</button>
+        <button type="button" id="reset" class="btn">Reset</button>
+        <button type="button" id="help" class="btn">Help</button>
+        <button type="button" id="toggle-sightlines" class="btn">Sightlines</button>
+      </section>
+
+      <div id="win-banner" class="win-banner hidden" role="status">
+        <strong>Puzzle solved!</strong>
+      </div>
+
+      <main class="game-area">
+        <div id="board" class="board" role="grid" aria-label="Sightline board"></div>
+        <aside class="sidebar">
+          <div class="goal-panel">
+            <p class="goal-label">Your goal</p>
+            <p class="goal-status">
+              Shade cells black so every numbered cell sees exactly its number of white cells in the
+              four cardinal directions.
+            </p>
+            <p class="goal-detail">
+              Black cells cannot touch orthogonally. All white cells must be orthogonally connected.
+              Tap a cell to cycle: unknown → white → black. Long-press a numbered cell to see its
+              sightlines.
+            </p>
+          </div>
+          <p class="hint">
+            <strong>Tip:</strong> numbered cells are always white. A red border on a numbered cell
+            means its current visible count is impossible. A green border means it’s satisfied.
+          </p>
+        </aside>
+      </main>
+
+      <footer class="footer">
+        <span id="puzzle-id" class="puzzle-id"></span>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
