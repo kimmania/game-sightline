@@ -1,67 +1,62 @@
 const TUTORIAL_SIZE = 6;
 
-// fmt: '?'=unknown, 'W'=white, 'B'=black, 'G'=given (white with number)
+// Solution for the finished tutorial board (coordinate strings "r,c")
+const TUTORIAL_BLACKS = new Set([
+  "0,5", "1,1", "1,4", "2,2", "3,3", "4,4", "5,0",
+]);
+
+// fmt: '?'=unknown, 'W'=white (non-given), 'B'=black, 'G'=given (white with number)
 const TUTORIAL_STATES = [
   {
-    label: 'Before — numbered cells are clues. Every other cell is unknown (gray). Your goal is to shade the correct cells black.',
+    label:
+      'Before — only the numbered cells are visible clues. Every other cell is unknown (gray). Your job is to mark the rest either white or black.',
     grid: [
-      'W?W?WW',
-      '??W???',
-      'W?????',
-      '????W?',
       '??????',
-      'B?W??W',
-    ],
-    givenMap: [
-      [null, 4, null, 6, null, null],
-      [null, null, 2, null, null, null],
-      [5, null, null, null, null, null],
-      [null, null, null, null, 2, null],
-      [null, null, null, null, null, null],
-      [null, null, 6, null, null, 8],
+      '??????',
+      '??????',
+      '??????',
+      '??????',
+      '??????',
     ],
     sightlineRoot: null as { x: number; y: number } | null,
   },
   {
-    label: 'What a number means — this cell sees exactly 2 white cells: one above and one to the right. It can\u2019t see through black cells.',
+    label:
+      'What a number means — from this " 2 ", highlighted cells show what it counts. Down and left are blocked by black cells, leaving two visible whites: one above and one to the right.',
     grid: [
-      'W?W?WW',
-      '??W???',
-      'W?????',
-      '????W?',
       '??????',
-      'B?W??W',
-    ],
-    givenMap: [
-      [null, 4, null, 6, null, null],
-      [null, null, 2, null, null, null],
-      [5, null, null, null, null, null],
-      [null, null, null, null, 2, null],
-      [null, null, null, null, null, null],
-      [null, null, 6, null, null, 8],
+      '??????',
+      '??????',
+      '??????',
+      '??????',
+      '??????',
     ],
     sightlineRoot: { x: 2, y: 1 },
   },
   {
-    label: 'Finished — every number matches its visible count, no blacks touch, and all white cells connect.',
+    label:
+      'Finished — every number matches its visible count, no black cells touch, and all white cells connect.',
     grid: [
-      'WBWWWW',
-      'WBWBWW',
-      'WWBWWW',
-      'WWWBWW',
+      'WGWGWB',
+      'WBGWBW',
+      'GWBWWW',
+      'WWWBGW',
       'WWWWBW',
-      'BWWWBW',
-    ],
-    givenMap: [
-      [null, 4, null, 6, null, null],
-      [null, null, 2, null, null, null],
-      [5, null, null, null, null, null],
-      [null, null, null, null, 2, null],
-      [null, null, null, null, null, null],
-      [null, null, 6, null, null, 8],
+      'BWGWWG',
     ],
     sightlineRoot: null,
   },
+];
+
+// placed on white backgrounds at fixed coordinates
+const TUTORIAL_GIVENS: { x: number; y: number; value: number }[] = [
+  { x: 1, y: 0, value: 4 },
+  { x: 3, y: 0, value: 6 },
+  { x: 2, y: 1, value: 2 },
+  { x: 0, y: 2, value: 5 },
+  { x: 4, y: 3, value: 2 },
+  { x: 2, y: 5, value: 6 },
+  { x: 5, y: 5, value: 8 },
 ];
 
 function getSightlineCells(root: { x: number; y: number } | null, size: number): Set<string> {
@@ -72,11 +67,12 @@ function getSightlineCells(root: { x: number; y: number } | null, size: number):
     [1, 0],
     [0, -1],
     [0, 1],
-  ]) {
-    let r = root.y + dr,
-      c = root.x + dc;
+  ] as const) {
+    let r = root.y + dr;
+    let c = root.x + dc;
     while (r >= 0 && r < size && c >= 0 && c < size) {
       cells.add(`${r},${c}`);
+      if (TUTORIAL_BLACKS.has(`${r},${c}`)) break;
       r += dr;
       c += dc;
     }
@@ -84,9 +80,7 @@ function getSightlineCells(root: { x: number; y: number } | null, size: number):
   return cells;
 }
 
-function makeMiniBoard(
-  state: (typeof TUTORIAL_STATES)[number],
-): HTMLElement {
+function makeMiniBoard(state: (typeof TUTORIAL_STATES)[number]): HTMLElement {
   const wrapper = document.createElement('div');
   wrapper.className = 'tutorial-board-wrapper';
 
@@ -102,7 +96,7 @@ function makeMiniBoard(
       const cell = document.createElement('div');
       cell.className = 'mini-cell';
       const code = state.grid[r][c];
-      const g = state.givenMap[r][c];
+      const g = TUTORIAL_GIVENS.find((v) => v.x === c && v.y === r)?.value ?? null;
       const key = `${r},${c}`;
 
       if (code === 'G' || g !== null) {
