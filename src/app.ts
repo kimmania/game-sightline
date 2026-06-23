@@ -35,6 +35,7 @@ class SightlineApp {
       onReset: () => this.handleReset(),
       onUndo: () => this.handleUndo(),
       onHelp: () => openHelp(),
+      onFillWhite: () => this.handleFillWhite(),
       onDifficultyChange: () => void this.newGame(),
       onToggleSightlines: () => this.toggleSightlines(),
     });
@@ -134,6 +135,30 @@ class SightlineApp {
     if (!this.state || !this.previousGrid) return;
     this.state.grid = this.previousGrid;
     this.previousGrid = null;
+    this.refresh();
+  }
+
+  private handleFillWhite(): void {
+    if (!this.state || this.state.won) return;
+    let changed = false;
+    for (let r = 0; r < this.state.grid.length; r++) {
+      for (let c = 0; c < this.state.grid[r].length; c++) {
+        if (this.state.grid[r][c] === 'unknown') {
+          changed = true;
+          if (!changed) break;
+        }
+      }
+      if (changed) break;
+    }
+    if (!changed) return;
+    this.stashUndo();
+    for (let r = 0; r < this.state.grid.length; r++) {
+      for (let c = 0; c < this.state.grid[r].length; c++) {
+        if (this.state.grid[r][c] === 'unknown') {
+          this.state.grid[r][c] = 'white';
+        }
+      }
+    }
     this.refresh();
   }
 

@@ -5,6 +5,7 @@ export function bindControlHandlers(options: {
   onReset: () => void;
   onUndo: () => void;
   onHelp: () => void;
+  onFillWhite: () => void;
   onDifficultyChange: () => void;
   onToggleSightlines: () => void;
 }): void {
@@ -12,6 +13,7 @@ export function bindControlHandlers(options: {
   document.getElementById('reset')?.addEventListener('click', options.onReset);
   document.getElementById('undo')?.addEventListener('click', options.onUndo);
   document.getElementById('help')?.addEventListener('click', options.onHelp);
+  document.getElementById('fill-white')?.addEventListener('click', options.onFillWhite);
   document.getElementById('toggle-sightlines')?.addEventListener('click', options.onToggleSightlines);
   document.getElementById('difficulty')?.addEventListener('change', options.onDifficultyChange);
 }
