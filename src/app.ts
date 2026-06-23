@@ -46,10 +46,14 @@ class SightlineApp {
       this.state = saved;
       setDifficulty(saved.difficulty);
       this.refresh();
-      return;
+    } else {
+      await this.newGame();
     }
 
-    await this.newGame();
+    if (!localStorage.getItem('sightline-has-seen-help')) {
+      openHelp();
+      localStorage.setItem('sightline-has-seen-help', '1');
+    }
   }
 
   private async newGame(): Promise<void> {
