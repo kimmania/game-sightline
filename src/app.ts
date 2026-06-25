@@ -7,6 +7,7 @@ import {
   bindControlHandlers,
   getSelectedDifficulty,
   setDifficulty,
+  setModeButton,
   setUndoEnabled,
   showWinBanner,
   updateDifficultyLabel,
@@ -20,6 +21,7 @@ class SightlineApp {
   private board = createBoard(document.getElementById('board')!);
   private loading = false;
   private previousGrid: CellState[][] | null = null;
+  private placeMode: 'black' | 'white' = 'black';
 
   async init(): Promise<void> {
     fetchBank('easy').catch(() => {});
@@ -38,7 +40,10 @@ class SightlineApp {
       onFillWhite: () => this.handleFillWhite(),
       onDifficultyChange: () => void this.newGame(),
       onToggleSightlines: () => this.toggleSightlines(),
+      onModeToggle: () => this.handleModeToggle(),
     });
+
+    setModeButton(this.placeMode);
 
     document.addEventListener('keydown', (e) => this.handleKeydown(e));
 
@@ -107,8 +112,15 @@ class SightlineApp {
 
     this.stashUndo();
     const current = this.state.grid[row][col];
-    const next: CellState =
-      current === 'unknown' ? 'black' : current === 'black' ? 'white' : 'unknown';
+    const target = this.placeMode;
+    let next: CellState;
+    if (current === target) {
+      next = 'unknown';
+    } else if (current === 'unknown') {
+      next = target;
+    } else {
+      next = 'unknown';
+    }
     this.state.grid[row][col] = next;
     this.refresh();
   }
@@ -129,6 +141,11 @@ class SightlineApp {
     if (!this.state) return;
     this.state.sightlineMode = !this.state.sightlineMode;
     this.refresh();
+  }
+
+  private handleModeToggle(): void {
+    this.placeMode = this.placeMode === 'black' ? 'white' : 'black';
+    setModeButton(this.placeMode);
   }
 
   private handleUndo(): void {

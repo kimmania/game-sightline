@@ -8,6 +8,7 @@ export function bindControlHandlers(options: {
   onFillWhite: () => void;
   onDifficultyChange: () => void;
   onToggleSightlines: () => void;
+  onModeToggle: () => void;
 }): void {
   document.getElementById('new-game')?.addEventListener('click', options.onNewGame);
   document.getElementById('reset')?.addEventListener('click', options.onReset);
@@ -15,6 +16,7 @@ export function bindControlHandlers(options: {
   document.getElementById('help')?.addEventListener('click', options.onHelp);
   document.getElementById('fill-white')?.addEventListener('click', options.onFillWhite);
   document.getElementById('toggle-sightlines')?.addEventListener('click', options.onToggleSightlines);
+  document.getElementById('mode-toggle')?.addEventListener('click', options.onModeToggle);
   document.getElementById('difficulty')?.addEventListener('change', options.onDifficultyChange);
 }
 
@@ -51,4 +53,12 @@ export function updatePuzzleId(id: string): void {
 export function setUndoEnabled(enabled: boolean): void {
   const el = document.getElementById('undo') as HTMLButtonElement | null;
   if (el) el.disabled = !enabled;
+}
+
+export function setModeButton(mode: 'black' | 'white'): void {
+  const el = document.getElementById('mode-toggle') as HTMLButtonElement | null;
+  if (!el) return;
+  el.dataset.mode = mode;
+  el.textContent = mode === 'black' ? '■' : '□';
+  el.classList.toggle('white-mode', mode === 'white');
 }

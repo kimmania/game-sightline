@@ -132,6 +132,20 @@ body {
   transform: translateY(1px);
 }
 
+.mode-toggle {
+  min-width: 44px;
+  text-align: center;
+  font-size: 1.1rem;
+  padding: 6px 10px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mode-toggle.white-mode {
+  background: rgba(240, 240, 245, 0.15);
+  border-color: rgba(240, 240, 245, 0.5);
+  color: #f0f0f5;
+}
+
 .win-banner {
   background: var(--success);
   color: #0f0f1a;

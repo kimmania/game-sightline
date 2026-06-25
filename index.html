@@ -37,6 +37,7 @@
             <option value="expert">Expert (14×14)</option>
           </select>
         </label>
+        <button type="button" id="mode-toggle" class="btn mode-toggle" data-mode="black">■</button>
         <button type="button" id="new-game" class="btn btn-primary">New Game</button>
         <button type="button" id="undo" class="btn" disabled>Undo</button>
         <button type="button" id="reset" class="btn">Reset</button>
@@ -60,8 +61,8 @@
             </p>
             <p class="goal-detail">
               Black cells cannot touch orthogonally. All white cells must be orthogonally connected.
-              Tap a cell to cycle: unknown → black → white. Long-press a numbered cell to see its
-              sightlines.
+              Use the ■/□ toggle to choose what your tap places. Tapping again returns the cell to
+              unknown. Long-press a numbered cell to see its sightlines.
             </p>
           </div>
           <p class="hint">
