@@ -248,6 +248,28 @@ body {
   color: var(--text-dim);
 }
 
+.goal-toggle {
+  width: 100%;
+  margin-bottom: 6px;
+  background: transparent;
+  border: 1px solid var(--grid-line);
+  color: var(--text-dim);
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.goal-toggle:hover {
+  background: var(--surface);
+}
+
+.goal-content.collapsed {
+  display: none;
+}
+
 .goal-panel {
   background: var(--surface);
   border-radius: 10px;

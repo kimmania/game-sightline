@@ -8,10 +8,12 @@ import {
   bindControlHandlers,
   getSelectedDifficulty,
   setDifficulty,
+  setGoalCollapsed,
   setHintEnabled,
   setModeButton,
   setUndoEnabled,
   showWinBanner,
+  toggleGoalCollapsed,
   updateDifficultyLabel,
   updateMistakes,
   updatePuzzleId,
@@ -43,6 +45,7 @@ class SightlineApp {
       onToggleSightlines: () => this.toggleSightlines(),
       onModeToggle: () => this.handleModeToggle(),
       onHint: () => this.handleHint(),
+      onToggleGoal: () => toggleGoalCollapsed(),
     });
 
     setModeButton(this.placeMode);
@@ -66,6 +69,9 @@ class SightlineApp {
       openHelp();
       localStorage.setItem('sightline-has-seen-help', '1');
     }
+
+    const goalCollapsed = localStorage.getItem('sightline-goal-collapsed') === '1';
+    setGoalCollapsed(goalCollapsed);
   }
 
   private hasProgress(): boolean {

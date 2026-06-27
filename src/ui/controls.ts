@@ -10,6 +10,7 @@ export function bindControlHandlers(options: {
   onToggleSightlines: () => void;
   onModeToggle: () => void;
   onHint: () => void;
+  onToggleGoal: () => void;
 }): void {
   document.getElementById('new-game')?.addEventListener('click', options.onNewGame);
   document.getElementById('reset')?.addEventListener('click', options.onReset);
@@ -20,6 +21,7 @@ export function bindControlHandlers(options: {
   document.getElementById('toggle-sightlines')?.addEventListener('click', options.onToggleSightlines);
   document.getElementById('mode-toggle')?.addEventListener('click', options.onModeToggle);
   document.getElementById('difficulty')?.addEventListener('change', options.onDifficultyChange);
+  document.getElementById('goal-toggle')?.addEventListener('click', options.onToggleGoal);
 }
 
 export function getSelectedDifficulty(): Difficulty {
@@ -68,4 +70,22 @@ export function setModeButton(mode: 'black' | 'white'): void {
   el.dataset.mode = mode;
   el.textContent = mode === 'black' ? '■' : '□';
   el.classList.toggle('black-mode', mode === 'black');
+}
+
+export function toggleGoalCollapsed(): void {
+  const btn = document.getElementById('goal-toggle') as HTMLButtonElement | null;
+  const content = document.getElementById('goal-content');
+  if (!btn || !content) return;
+  const collapsed = content.classList.toggle('collapsed');
+  btn.textContent = collapsed ? 'Show Goal ▼' : 'Hide Goal ▲';
+  localStorage.setItem('sightline-goal-collapsed', collapsed ? '1' : '0');
+}
+
+export function setGoalCollapsed(collapsed: boolean): void {
+  const btn = document.getElementById('goal-toggle') as HTMLButtonElement | null;
+  const content = document.getElementById('goal-content');
+  if (!btn || !content) return;
+  content.classList.toggle('collapsed', collapsed);
+  btn.textContent = collapsed ? 'Show Goal ▼' : 'Hide Goal ▲';
+  localStorage.setItem('sightline-goal-collapsed', collapsed ? '1' : '0');
 }
