@@ -1,4 +1,5 @@
-import type { CellState, GameState } from './sightline/types';
+import type { CellState, Difficulty, GameState } from './sightline/types';
+import { DIFFICULTIES, LAST_DIFFICULTY_KEY } from './sightline/types';
 import { fetchBank, resetGameState, startNewGame } from './sightline/puzzle';
 import { clearSavedGame, loadSavedGame, saveGame } from './sightline/storage';
 import { getAdjacentBlackConflicts, getViolatedGivens, isWin } from './sightline/validator';
@@ -7,6 +8,7 @@ import {
   bindControlHandlers,
   getSelectedDifficulty,
   setDifficulty,
+  setHintEnabled,
   setModeButton,
   setUndoEnabled,
   showWinBanner,
@@ -20,7 +22,6 @@ class SightlineApp {
   private state: GameState | null = null;
   private board = createBoard(document.getElementById('board')!);
   private loading = false;
-  private previousGrid: CellState[][] | null = null;
   private placeMode: 'black' | 'white' = 'black';
 
   async init(): Promise<void> {
@@ -41,6 +42,7 @@ class SightlineApp {
       onDifficultyChange: () => void this.newGame(),
       onToggleSightlines: () => this.toggleSightlines(),
       onModeToggle: () => this.handleModeToggle(),
+      onHint: () => this.handleHint(),
     });
 
     setModeButton(this.placeMode);
@@ -53,6 +55,10 @@ class SightlineApp {
       setDifficulty(saved.difficulty);
       this.refresh();
     } else {
+      const last = localStorage.getItem(LAST_DIFFICULTY_KEY);
+      if (last && DIFFICULTIES.includes(last as Difficulty)) {
+        setDifficulty(last as Difficulty);
+      }
       await this.newGame();
     }
 
@@ -62,15 +68,31 @@ class SightlineApp {
     }
   }
 
+  private hasProgress(): boolean {
+    if (!this.state) return false;
+    for (let r = 0; r < this.state.size; r++) {
+      for (let c = 0; c < this.state.size; c++) {
+        if (this.state.grid[r][c] !== 'unknown') {
+          const isGiven = this.state.givens.some((g) => g.x === c && g.y === r);
+          if (!isGiven) return true;
+        }
+      }
+    }
+    return false;
+  }
+
   private async newGame(): Promise<void> {
     if (this.loading) return;
+    if (this.state && !this.state.won && this.hasProgress()) {
+      if (!confirm('A game is in progress. Start a new game?')) return;
+    }
     this.loading = true;
     clearSavedGame();
-    this.previousGrid = null;
     closeHelp();
 
     try {
       const difficulty = getSelectedDifficulty();
+      localStorage.setItem(LAST_DIFFICULTY_KEY, difficulty);
       this.state = await startNewGame(difficulty);
       this.refresh();
     } catch (err) {
@@ -84,13 +106,16 @@ class SightlineApp {
   private handleReset(): void {
     if (!this.state) return;
     resetGameState(this.state);
-    this.previousGrid = null;
     this.refresh();
   }
 
   private stashUndo(): void {
     if (!this.state || this.state.won) return;
-    this.previousGrid = this.state.grid.map((row) => [...row]);
+    const snapshot = this.state.grid.map((row) => [...row]);
+    this.state.history.push(snapshot);
+    if (this.state.history.length > 30) {
+      this.state.history.shift();
+    }
   }
 
   private handleTap(row: number, col: number): void {
@@ -149,28 +174,27 @@ class SightlineApp {
   }
 
   private handleUndo(): void {
-    if (!this.state || !this.previousGrid) return;
-    this.state.grid = this.previousGrid;
-    this.previousGrid = null;
+    if (!this.state || this.state.history.length === 0) return;
+    this.state.grid = this.state.history.pop()!;
     this.refresh();
   }
 
   private handleFillWhite(): void {
     if (!this.state || this.state.won) return;
-    let changed = false;
-    for (let r = 0; r < this.state.grid.length; r++) {
-      for (let c = 0; c < this.state.grid[r].length; c++) {
+    let hasUnknown = false;
+    for (let r = 0; r < this.state.size; r++) {
+      for (let c = 0; c < this.state.size; c++) {
         if (this.state.grid[r][c] === 'unknown') {
-          changed = true;
-          if (!changed) break;
+          hasUnknown = true;
+          break;
         }
       }
-      if (changed) break;
+      if (hasUnknown) break;
     }
-    if (!changed) return;
+    if (!hasUnknown) return;
     this.stashUndo();
-    for (let r = 0; r < this.state.grid.length; r++) {
-      for (let c = 0; c < this.state.grid[r].length; c++) {
+    for (let r = 0; r < this.state.size; r++) {
+      for (let c = 0; c < this.state.size; c++) {
         if (this.state.grid[r][c] === 'unknown') {
           this.state.grid[r][c] = 'white';
         }
@@ -179,11 +203,43 @@ class SightlineApp {
     this.refresh();
   }
 
+  private handleHint(): void {
+    if (!this.state || this.state.won) return;
+    const size = this.state.size;
+    const sol = this.state.solution;
+
+    let candidates: [number, number][] = [];
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        if (this.state.grid[r][c] === 'unknown' && sol[r * size + c] === '1') {
+          candidates.push([r, c]);
+        }
+      }
+    }
+    if (candidates.length === 0) {
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          if (this.state.grid[r][c] === 'unknown' && sol[r * size + c] === '0') {
+            candidates.push([r, c]);
+          }
+        }
+      }
+    }
+    if (candidates.length === 0) return;
+
+    const [row, col] = candidates[Math.floor(Math.random() * candidates.length)];
+    this.stashUndo();
+    this.state.grid[row][col] = sol[row * size + col] === '1' ? 'black' : 'white';
+    this.refresh();
+  }
+
   private handleKeydown(e: KeyboardEvent): void {
     if (document.querySelector('#help-dialog')) {
       if (e.key === 'Escape') closeHelp();
       return;
     }
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') return;
     if (!this.state || this.state.won) return;
     if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
       e.preventDefault();
@@ -212,7 +268,8 @@ class SightlineApp {
     this.state.mistakes = mistakes;
     updateMistakes(mistakes);
     updatePuzzleId(this.state.puzzleId);
-    setUndoEnabled(this.previousGrid !== null);
+    setUndoEnabled(this.state.history.length > 0);
+    setHintEnabled(!this.state.won);
     updateDifficultyLabel(
       this.state.difficulty.charAt(0).toUpperCase() + this.state.difficulty.slice(1),
     );

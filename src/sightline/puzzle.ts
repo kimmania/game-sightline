@@ -55,6 +55,7 @@ export function createGameState(puzzle: Puzzle, difficulty: Difficulty): GameSta
     sightlineMode: false,
     activeSightline: null,
     history: [],
+    version: 1,
   };
 }
 

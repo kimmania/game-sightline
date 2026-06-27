@@ -27,8 +27,10 @@ export interface GameState {
   sightlineMode: boolean;
   activeSightline: { x: number; y: number } | null;
   history: CellState[][][];
+  version: number;
 }
 
 export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard', 'expert'];
 export const STORAGE_KEY = 'sightline-save';
 export const RECENT_KEY = 'sightline-recent';
+export const LAST_DIFFICULTY_KEY = 'sightline-last-difficulty';

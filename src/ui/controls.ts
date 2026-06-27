@@ -9,12 +9,14 @@ export function bindControlHandlers(options: {
   onDifficultyChange: () => void;
   onToggleSightlines: () => void;
   onModeToggle: () => void;
+  onHint: () => void;
 }): void {
   document.getElementById('new-game')?.addEventListener('click', options.onNewGame);
   document.getElementById('reset')?.addEventListener('click', options.onReset);
   document.getElementById('undo')?.addEventListener('click', options.onUndo);
   document.getElementById('help')?.addEventListener('click', options.onHelp);
   document.getElementById('fill-white')?.addEventListener('click', options.onFillWhite);
+  document.getElementById('hint')?.addEventListener('click', options.onHint);
   document.getElementById('toggle-sightlines')?.addEventListener('click', options.onToggleSightlines);
   document.getElementById('mode-toggle')?.addEventListener('click', options.onModeToggle);
   document.getElementById('difficulty')?.addEventListener('change', options.onDifficultyChange);
@@ -52,6 +54,11 @@ export function updatePuzzleId(id: string): void {
 
 export function setUndoEnabled(enabled: boolean): void {
   const el = document.getElementById('undo') as HTMLButtonElement | null;
+  if (el) el.disabled = !enabled;
+}
+
+export function setHintEnabled(enabled: boolean): void {
+  const el = document.getElementById('hint') as HTMLButtonElement | null;
   if (el) el.disabled = !enabled;
 }
 

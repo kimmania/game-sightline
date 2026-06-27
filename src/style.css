@@ -208,10 +208,6 @@ body {
   color: transparent;
 }
 
-.cell.empty {
-  background: var(--cell-empty);
-}
-
 .cell.conflict {
   box-shadow: inset 0 0 0 3px var(--danger);
 }

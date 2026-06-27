@@ -97,7 +97,6 @@ export function renderBoard(board: BoardElements, state: GameState): void {
       cell.className = 'cell';
       if (st === 'black') cell.classList.add('black');
       else if (st === 'white') cell.classList.add('white');
-      else cell.classList.add('empty');
 
       if (isGiven) cell.classList.add('given');
 

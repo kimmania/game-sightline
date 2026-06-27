@@ -1,3 +1,6 @@
+import type { CellState } from '../sightline/types';
+import { isWin } from '../sightline/validator';
+
 const TUTORIAL_SIZE = 6;
 
 // Solution for the finished tutorial board (coordinate strings "r,c")
@@ -186,3 +189,22 @@ export function openHelp(): void {
 export function closeHelp(): void {
   document.getElementById('help-dialog')?.remove();
 }
+
+function validateTutorial(): void {
+  const size = TUTORIAL_SIZE;
+  const grid: CellState[][] = Array.from({ length: size }, () =>
+    Array.from({ length: size }, () => 'unknown' as CellState),
+  );
+  const finished = TUTORIAL_STATES[2];
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size; c++) {
+      const ch = finished.grid[r][c];
+      if (ch === 'B') grid[r][c] = 'black';
+      else if (ch === 'W' || ch === 'G') grid[r][c] = 'white';
+    }
+  }
+  if (!isWin(grid, TUTORIAL_GIVENS)) {
+    console.warn('Tutorial board is invalid according to game rules!');
+  }
+}
+validateTutorial();
