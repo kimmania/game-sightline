@@ -2,7 +2,7 @@ import type { CellState, Difficulty, GameState } from './sightline/types';
 import { DIFFICULTIES, LAST_DIFFICULTY_KEY } from './sightline/types';
 import { fetchBank, resetGameState, startNewGame } from './sightline/puzzle';
 import { clearSavedGame, loadSavedGame, saveGame } from './sightline/storage';
-import { getAdjacentBlackConflicts, getViolatedGivens, isWin } from './sightline/validator';
+import { getAdjacentBlackConflicts, getViolatedGivens, isComplete, isWhiteConnected, isWin } from './sightline/validator';
 import { bindBoardInteractions, createBoard, renderBoard } from './ui/board';
 import {
   bindControlHandlers,
@@ -12,6 +12,7 @@ import {
   setHintEnabled,
   setModeButton,
   setUndoEnabled,
+  showSuggestionBanner,
   showWinBanner,
   toggleGoalCollapsed,
   updateDifficultyLabel,
@@ -285,10 +286,14 @@ class SightlineApp {
     if (!this.state.won && isWin(this.state.grid, this.state.givens)) {
       this.state.won = true;
       showWinBanner(true);
+      showSuggestionBanner(false);
       clearSavedGame();
       renderBoard(this.board, this.state);
     } else if (!this.state.won) {
       showWinBanner(false);
+      const complete = isComplete(this.state.grid);
+      const connected = isWhiteConnected(this.state.grid);
+      showSuggestionBanner(complete && !connected);
       saveGame(this.state);
     }
   }

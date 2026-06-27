@@ -49,6 +49,11 @@ export function showWinBanner(show: boolean): void {
   if (el) el.classList.toggle('hidden', !show);
 }
 
+export function showSuggestionBanner(show: boolean): void {
+  const el = document.getElementById('suggestion-banner');
+  if (el) el.classList.toggle('hidden', !show);
+}
+
 export function updatePuzzleId(id: string): void {
   const el = document.getElementById('puzzle-id');
   if (el) el.textContent = id;

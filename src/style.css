@@ -187,6 +187,21 @@ body {
   margin-bottom: 12px;
 }
 
+.suggestion-banner {
+  background: var(--warning);
+  color: #1a1a00;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.suggestion-banner strong {
+  font-weight: 700;
+}
+
 .hidden {
   display: none !important;
 }
