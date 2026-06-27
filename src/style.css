@@ -170,6 +170,15 @@ body {
   align-items: center;
 }
 
+.play-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: min(92vmin, calc(var(--board-n, 8) * 72px));
+}
+
 .board {
   display: grid;
   gap: 2px;
@@ -180,7 +189,6 @@ body {
   user-select: none;
   -webkit-user-select: none;
   width: 100%;
-  max-width: min(90vmin, 640px);
   aspect-ratio: 1 / 1;
 }
 
@@ -191,7 +199,7 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: calc(min(90vmin, 640px) / var(--board-n, 8) * 0.52);
+  font-size: calc(min(92vmin, calc(var(--board-n, 8) * 72px)) / var(--board-n, 8) * 0.52);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -249,25 +257,47 @@ body {
 }
 
 .goal-toggle {
-  width: 100%;
-  margin-bottom: 6px;
-  background: transparent;
-  border: 1px solid var(--grid-line);
-  color: var(--text-dim);
-  padding: 4px 10px;
-  font-size: 0.85rem;
+  display: none;
+}
+
+.sidebar-toggle {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  background: var(--surface-light);
+  border: 1px solid var(--grid-line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: margin 0.2s ease;
 }
 
-.goal-toggle:hover {
-  background: var(--surface);
+.sidebar.collapsed .sidebar-toggle {
+  margin-bottom: 0;
 }
 
-.goal-content.collapsed {
-  display: none;
+.toggle-chevron {
+  transition: transform 0.2s ease;
+}
+
+.sidebar.collapsed .toggle-chevron {
+  transform: rotate(-90deg);
+}
+
+.sidebar-content {
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+  overflow: hidden;
+}
+
+.sidebar.collapsed .sidebar-content {
+  max-height: 0;
+  opacity: 0;
 }
 
 .goal-panel {
@@ -404,10 +434,26 @@ body {
     align-items: flex-start;
     justify-content: center;
   }
-  .board {
-    max-width: 520px;
+  .play-area {
+    flex: 1 1 auto;
+    align-items: center;
   }
   .sidebar {
+    flex: 0 0 280px;
     max-width: 280px;
+  }
+  .sidebar.collapsed {
+    flex: 0 0 44px;
+    max-width: 44px;
+  }
+  .sidebar.collapsed .sidebar-content {
+    display: none;
+  }
+  .sidebar.collapsed .sidebar-toggle {
+    justify-content: center;
+    padding: 12px 4px;
+  }
+  .sidebar.collapsed .toggle-label {
+    display: none;
   }
 }

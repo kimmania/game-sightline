@@ -52,10 +52,17 @@
       </div>
 
       <main class="game-area">
-        <div id="board" class="board" role="grid" aria-label="Sightline board"></div>
-        <aside class="sidebar">
-          <button type="button" id="goal-toggle" class="btn goal-toggle">Hide Goal ▲</button>
-          <div id="goal-content" class="goal-content">
+        <div class="play-area">
+          <div id="board" class="board" role="grid" aria-label="Sightline board"></div>
+        </div>
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-controls" id="sidebar-controls">
+            <button type="button" id="sidebar-toggle" class="sidebar-toggle" aria-expanded="true" aria-controls="sidebar-content">
+              <span class="toggle-label">Hide tips</span>
+              <span class="toggle-chevron" aria-hidden="true">⌄</span>
+            </button>
+          </div>
+          <div id="sidebar-content" class="sidebar-content">
             <div class="goal-panel">
               <p class="goal-label">Your goal</p>
               <p class="goal-status">
