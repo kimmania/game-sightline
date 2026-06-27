@@ -137,13 +137,16 @@ body {
   text-align: center;
   font-size: 1.1rem;
   padding: 6px 10px;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  background: var(--cell-white);
+  color: var(--bg);
+  border: 2px solid var(--grid-line);
 }
 
-.mode-toggle.white-mode {
-  background: rgba(240, 240, 245, 0.15);
-  border-color: rgba(240, 240, 245, 0.5);
-  color: #f0f0f5;
+.mode-toggle.black-mode {
+  background: var(--cell-black);
+  color: var(--text);
+  border-color: var(--grid-line);
 }
 
 .win-banner {

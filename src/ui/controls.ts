@@ -67,5 +67,5 @@ export function setModeButton(mode: 'black' | 'white'): void {
   if (!el) return;
   el.dataset.mode = mode;
   el.textContent = mode === 'black' ? '■' : '□';
-  el.classList.toggle('white-mode', mode === 'white');
+  el.classList.toggle('black-mode', mode === 'black');
 }
