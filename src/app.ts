@@ -48,6 +48,8 @@ class SightlineApp {
       onToggleGoal: () => toggleGoalCollapsed(),
     });
 
+    document.getElementById('play-again')?.addEventListener('click', () => void this.newGame());
+
     setModeButton(this.placeMode);
 
     document.addEventListener('keydown', (e) => this.handleKeydown(e));
